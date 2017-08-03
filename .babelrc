@@ -1,5 +1,16 @@
 {
     "presets": [
         "latest"
-    ]
+    ],
+    "plugins": [
+        "transform-decorators-legacy",
+        "transform-object-rest-spread",
+        "transform-class-properties",
+        "syntax-dynamic-import",
+        ["transform-builtin-extend", {
+            "globals": ["Error", "Array"],
+            "approximate": true
+        }]
+    ],
+    "retainLines": true
 }

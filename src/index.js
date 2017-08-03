@@ -1,6 +1,4 @@
-import { Point } from 'pixi.js';
+import Game from './game';
 
-const name = 'Rogerio';
-
-console.log(`Let's do it ${name}`);
-console.log(Point);
+const game = new Game();
+game.start();
