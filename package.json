@@ -3,7 +3,8 @@
         "start": "npm-run-all --parallel start:server lint:watch",
         "start:server": "babel-node scripts/server.js",
         "lint": "esw webpack.config.* src scripts --color",
-        "lint:watch": "yarn lint -- --watch"
+        "lint:watch": "yarn lint -- --watch",
+        "share": "lt --port 3030"
     },
     "dependencies": {
         "@tweenjs/tween.js": "^17.1.0",
@@ -27,6 +28,7 @@
         "eslint-plugin-import": "^2.7.0",
         "eslint-watch": "^3.1.2",
         "express": "^4.15.3",
+        "localtunnel": "^1.8.3",
         "open": "^0.0.5",
         "webpack": "^3.3.0",
         "webpack-dev-middleware": "^1.11.0",

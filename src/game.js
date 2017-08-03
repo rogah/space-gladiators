@@ -1,4 +1,4 @@
-import { CanvasRenderer, Stage, Graphics } from 'pixi.js';
+import { CanvasRenderer, Container, Graphics } from 'pixi.js';
 import range from 'lodash/range';
 
 export default class Game {
@@ -13,7 +13,7 @@ export default class Game {
         this.renderer = new CanvasRenderer(width, height);
         document.body.appendChild(this.renderer.view);
 
-        this.stage = new Stage();
+        this.stage = new Container();
     }
 
     drawStars = () => {

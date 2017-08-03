@@ -3,13 +3,13 @@ import path from 'path';
 import webpack from 'webpack';
 
 export default {
-    devtool: 'inline-source-map',
+    devtool: 'source-map',
     entry: [
         path.resolve(__dirname, 'src/index'),
     ],
     target: 'web',
     output: {
-        path: path.resolve(__dirname, 'src'),
+        path: path.resolve(__dirname, 'dist'),
         publicPath: path.resolve(__dirname, '/'),
         filename: 'bundle.js',
     },
@@ -20,6 +20,7 @@ export default {
         ],
     },
     plugins: [
+        new webpack.optimize.DedupePlugin(),
         new webpack.optimize.UglifyJsPlugin({
             sourceMap: true,
         }),
