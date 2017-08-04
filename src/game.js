@@ -1,5 +1,6 @@
 import { CanvasRenderer, Container, Graphics } from 'pixi.js';
 import { World, Body, Box, Circle } from 'p2';
+import Howl from 'howler';
 import range from 'lodash/range';
 
 export default class Game {
@@ -33,6 +34,17 @@ export default class Game {
 
         this.enemyBodies = [];
         this.enemyGraphics = [];
+    }
+
+    setupAudio = () => {
+        this.sounds = new Howl({
+            urls: ['sounds.mp3', 'sounds.ogg'],
+            sprite: {
+                boom1: [0, 636],
+                boom2: [2000, 2274],
+                boom3: [5000, 3056],
+            },
+        });
     }
 
     drawStars = () => {
@@ -214,6 +226,7 @@ export default class Game {
         this.setupBoundaries();
         this.createShip();
         this.createEnemies();
+        this.setupAudio();
         requestAnimationFrame(() => this.tick());
     }
 }

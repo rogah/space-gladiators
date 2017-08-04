@@ -8,6 +8,7 @@
     },
     "dependencies": {
         "@tweenjs/tween.js": "^17.1.0",
+        "howler": "^2.0.4",
         "lodash": "^4.17.4",
         "p2": "^0.7.1",
         "pixi.js": "^4.5.3"
