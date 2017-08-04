@@ -1,6 +1,6 @@
 import { CanvasRenderer, Container, Graphics } from 'pixi.js';
 import { World, Body, Box, Circle } from 'p2';
-import Howl from 'howler';
+import { Howl } from 'howler';
 import range from 'lodash/range';
 
 export default class Game {
@@ -34,11 +34,12 @@ export default class Game {
 
         this.enemyBodies = [];
         this.enemyGraphics = [];
+        this.removeObjects = [];
     }
 
     setupAudio = () => {
         this.sounds = new Howl({
-            urls: ['sounds.mp3', 'sounds.ogg'],
+            src: ['sounds.mp3', 'sounds.ogg'],
             sprite: {
                 boom1: [0, 636],
                 boom2: [2000, 2274],
@@ -138,18 +139,19 @@ export default class Game {
                 angularVelocity: va,
             });
 
-            const enemyShape = new Circle({ radius: 1 });
+            const enemyShape = new Circle({ radius: 20 });
+            enemyShape.sensor = true;
             enemyBody.addShape(enemyShape);
             this.world.addBody(enemyBody);
 
             // create enemy graphics
             const enemyGraphics = new Graphics();
             enemyGraphics.beginFill(0x38d41a);
-            enemyGraphics.drawCircle(x, y, 20);
+            enemyGraphics.drawCircle(0, 0, 20);
             enemyGraphics.endFill();
             enemyGraphics.beginFill(0x2aff00);
             enemyGraphics.lineStyle(1, 0x239d0b, 1);
-            enemyGraphics.drawCircle(x, y, 10);
+            enemyGraphics.drawCircle(0, 0, 10);
             enemyGraphics.endFill();
 
             this.stage.addChild(enemyGraphics);
@@ -157,6 +159,12 @@ export default class Game {
             this.enemyBodies.push(enemyBody);
             this.enemyGraphics.push(enemyGraphics);
         }, 1000);
+
+        this.world.on('beginContact', (event) => {
+            if (event.bodyB.id === this.ship.id) {
+                this.removeObjects.push(event.bodyA);
+            }
+        });
     }
 
     handleKeys = (keyCode, state) => {
@@ -181,14 +189,14 @@ export default class Game {
             this.ship.angularVelocity = 0;
         }
 
-        // apply force vector to ship
+        // apply force vector to ship.
         if (this.keyUp) {
             const angle = this.ship.angle + (Math.PI / 2);
             this.ship.force[0] -= this.speed * Math.cos(angle);
             this.ship.force[1] -= this.speed * Math.sin(angle);
         }
 
-        // update the position of the graphics based on the physics simulation
+        // update the position of the graphics based on the physics simulation.
         this.shipGraphics.x = this.ship.position[0];
         this.shipGraphics.y = this.ship.position[1];
         this.shipGraphics.rotation = this.ship.angle;
@@ -205,14 +213,26 @@ export default class Game {
             this.ship.position[1] = height;
         }
 
-        // update enemy positions
+        // update enemy positions.
         this.enemyBodies.forEach((enemyBody, index) => {
             this.enemyGraphics[index].x = enemyBody.position[0];
-            this.enemyGraphics[index].x = enemyBody.position[1];
+            this.enemyGraphics[index].y = enemyBody.position[1];
         });
 
-        // step the physics simulation forward
+        // step the physics simulation forward.
         this.world.step(1 / 60);
+
+        // remove enemy bodies.
+        this.removeObjects.forEach((removeObject) => {
+            this.world.removeBody(removeObject);
+            const index = this.enemyBodies.indexOf(removeObject);
+            if (index > -1) {
+                this.enemyBodies.splice(index, 1);
+                this.stage.removeChild(this.enemyGraphics[index]);
+                this.enemyGraphics.splice(index, 1);
+            }
+        });
+        this.removeObjects.length = 0;
     }
 
     tick = () => {

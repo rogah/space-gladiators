@@ -16,6 +16,8 @@ app.use(require('webpack-dev-middleware')(compiler, {
     publicPath: config.output.publicPath,
 }));
 
+app.use(express.static(path.join(__dirname, '../assets')));
+
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, '../index.html'));
 });
