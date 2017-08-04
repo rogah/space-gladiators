@@ -2721,6 +2721,12 @@ p-locate@^2.0.0:
   dependencies:
     p-limit "^1.1.0"
 
+p2@^0.7.1:
+  version "0.7.1"
+  resolved "https://registry.yarnpkg.com/p2/-/p2-0.7.1.tgz#25f2474d9bc3a6d3140a1da26a67c9e118ac9543"
+  dependencies:
+    poly-decomp "0.1.1"
+
 pako@~0.2.0:
   version "0.2.9"
   resolved "https://registry.yarnpkg.com/pako/-/pako-0.2.9.tgz#f3f7522f4ef782348da8161bad9ecfd51bf83a75"
@@ -2868,6 +2874,10 @@ pkg-dir@^2.0.0:
 pluralize@^4.0.0:
   version "4.0.0"
   resolved "https://registry.yarnpkg.com/pluralize/-/pluralize-4.0.0.tgz#59b708c1c0190a2f692f1c7618c446b052fd1762"
+
+poly-decomp@0.1.1:
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/poly-decomp/-/poly-decomp-0.1.1.tgz#9f68c4fa558663791c9ba4c2df7283f3096c23c9"
 
 prelude-ls@~1.1.2:
   version "1.1.2"
