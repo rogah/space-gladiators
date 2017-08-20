@@ -218,6 +218,8 @@ export default class Game {
         this.world.on('beginContact', (event) => {
             if (event.bodyB.id === this.ship.id) {
                 this.removeObjects.push(event.bodyA);
+                // play random boom sound.
+                this.sounds.play(`boom${Math.ceil(Math.random() * 3)}`);
             }
         });
     }
@@ -270,8 +272,16 @@ export default class Game {
 
         // update enemy positions.
         this.enemyBodies.forEach((enemyBody, index) => {
-            this.enemyGraphics[index].x = enemyBody.position[0];
-            this.enemyGraphics[index].y = enemyBody.position[1];
+            const x = enemyBody.position[0];
+            const y = enemyBody.position[1];
+
+            const enemyGraphics = this.enemyGraphics[index];
+            enemyGraphics.x = x;
+            enemyGraphics.y = y;
+
+            if (x < 0 || y < 0 || x > width || y > height) {
+                this.removeObjects.push(enemyBody);
+            }
         });
 
         // step the physics simulation forward.
@@ -286,9 +296,6 @@ export default class Game {
                 this.stage.removeChild(this.enemyGraphics[index]);
                 this.enemyGraphics.splice(index, 1);
             }
-
-            // play random boom sound.
-            this.sounds.play(`boom${Math.ceil(Math.random() * 3)}`);
         });
         this.removeObjects.length = 0;
     }
