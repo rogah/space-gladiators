@@ -1,4 +1,10 @@
-import { CanvasRenderer, Container, Graphics } from 'pixi.js';
+import {
+    CanvasRenderer,
+    Container,
+    Graphics,
+    Texture,
+    Sprite,
+} from 'pixi.js';
 import { World, Body, Box, Circle } from 'p2';
 import { Howl } from 'howler';
 import range from 'lodash/range';
@@ -117,22 +123,37 @@ export default class Game {
             ],
         });
 
-        this.shipShape = new Box({ width: 52, height: 69 });
+        const shipSize = {
+            width: 52,
+            height: 69,
+        };
+
+        this.shipShape = new Box(shipSize);
         this.ship.addShape(this.shipShape);
         this.world.addBody(this.ship);
 
         const shipGraphics = new Graphics();
         shipGraphics.beginFill(0x20d3fe);
-        shipGraphics.moveTo(0, 0);
-        shipGraphics.lineTo(-26, 60);
-        shipGraphics.lineTo(26, 60);
+        shipGraphics.moveTo(26, 0);
+        shipGraphics.lineTo(0, 60);
+        shipGraphics.lineTo(52, 60);
         shipGraphics.endFill();
 
         shipGraphics.beginFill(0x149d1);
-        shipGraphics.drawRect(-15, 60, 30, 8);
+        shipGraphics.drawRect(7, 60, 38, 8);
         shipGraphics.endFill();
 
-        this.shipGraphics = shipGraphics;
+        // Cache the ship to only use one draw call per tick.
+        const shipCache = new CanvasRenderer({
+            ...shipSize,
+            transparent: true,
+        });
+        const shipStage = new Container();
+        shipStage.addChild(shipGraphics);
+        shipCache.render(shipStage);
+
+        const shipTexture = Texture.fromCanvas(shipCache.view);
+        this.shipGraphics = new Sprite(shipTexture);
 
         // Attach the walls to the stage.
         this.stage.addChild(this.shipGraphics);
@@ -183,7 +204,6 @@ export default class Game {
 
         this.world.on('beginContact', (event) => {
             if (event.bodyB.id === this.ship.id) {
-                console.log('Boom!');
                 this.removeObjects.push(event.bodyA);
             }
         });
