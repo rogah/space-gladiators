@@ -46,6 +46,13 @@ export default class Game {
                 boom3: [5000, 3056],
             },
         });
+
+        this.music = new Howl({
+            src: ['music.mp3', 'music.ogg'],
+            buffer: true,
+            autoplay: true,
+            volume: 0.7,
+        });
     }
 
     drawStars = () => {
@@ -162,6 +169,7 @@ export default class Game {
 
         this.world.on('beginContact', (event) => {
             if (event.bodyB.id === this.ship.id) {
+                console.log('Boom!');
                 this.removeObjects.push(event.bodyA);
             }
         });
@@ -231,6 +239,9 @@ export default class Game {
                 this.stage.removeChild(this.enemyGraphics[index]);
                 this.enemyGraphics.splice(index, 1);
             }
+
+            // play random boom sound.
+            this.sounds.play(`boom${Math.ceil(Math.random() * 3)}`);
         });
         this.removeObjects.length = 0;
     }
