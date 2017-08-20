@@ -162,6 +162,28 @@ export default class Game {
     createEnemies = () => {
         const { width, height } = this.viewPort;
 
+        // create enemy graphics
+        const enemyGraphics = new Graphics();
+        enemyGraphics.beginFill(0x38d41a);
+        enemyGraphics.drawCircle(20, 20, 20);
+        enemyGraphics.endFill();
+        enemyGraphics.beginFill(0x2aff00);
+        enemyGraphics.lineStyle(1, 0x239d0b, 1);
+        enemyGraphics.drawCircle(20, 20, 10);
+        enemyGraphics.endFill();
+
+        // create enemy cache.
+        const enemyCache = new CanvasRenderer({
+            width: 40,
+            height: 40,
+            transparent: true,
+        });
+        const enemyStage = new Container();
+        enemyStage.addChild(enemyGraphics);
+        enemyCache.render(enemyStage);
+
+        const enemyTexture = Texture.fromCanvas(enemyCache.view);
+
         // create random interval to generate new enemies.
         this.enemyTimer = setInterval(() => {
             // create enemy physics body
@@ -186,20 +208,11 @@ export default class Game {
             enemyBody.addShape(enemyShape);
             this.world.addBody(enemyBody);
 
-            // create enemy graphics
-            const enemyGraphics = new Graphics();
-            enemyGraphics.beginFill(0x38d41a);
-            enemyGraphics.drawCircle(0, 0, 20);
-            enemyGraphics.endFill();
-            enemyGraphics.beginFill(0x2aff00);
-            enemyGraphics.lineStyle(1, 0x239d0b, 1);
-            enemyGraphics.drawCircle(0, 0, 10);
-            enemyGraphics.endFill();
-
-            this.stage.addChild(enemyGraphics);
+            const enemySprite = new Sprite(enemyTexture);
+            this.stage.addChild(enemySprite);
 
             this.enemyBodies.push(enemyBody);
-            this.enemyGraphics.push(enemyGraphics);
+            this.enemyGraphics.push(enemySprite);
         }, 1000);
 
         this.world.on('beginContact', (event) => {
