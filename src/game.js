@@ -12,7 +12,21 @@ export default class Game {
     constructor() {
         const { width, height } = this.viewPort;
 
-        this.renderer = new CanvasRenderer(width, height);
+        // setup the background canvas.
+        this.backgroundRender = new CanvasRenderer({
+            width,
+            height,
+        });
+        document.body.appendChild(this.backgroundRender.view);
+
+        this.backgroundStage = new Container();
+
+        // setup the rendering surface.
+        this.renderer = new CanvasRenderer({
+            width,
+            height,
+            transparent: true,
+        });
         document.body.appendChild(this.renderer.view);
 
         this.stage = new Container();
@@ -71,7 +85,7 @@ export default class Game {
             star.endFill();
 
             // Attach the star to the stage.
-            this.stage.addChild(star);
+            this.backgroundStage.addChild(star);
         });
     }
 
@@ -86,7 +100,7 @@ export default class Game {
         walls.drawRect(0, 10, 10, height - 20);
 
         // Attach the walls to the stage.
-        this.stage.addChild(walls);
+        this.backgroundStage.addChild(walls);
     }
 
     createShip = () => {
@@ -255,6 +269,8 @@ export default class Game {
     start = () => {
         this.drawStars();
         this.setupBoundaries();
+        this.backgroundRender.render(this.backgroundStage);
+
         this.createShip();
         this.createEnemies();
         this.setupAudio();
