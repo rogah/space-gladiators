@@ -11,12 +11,17 @@ import range from 'lodash/range';
 
 export default class Game {
     viewPort = {
-        width: 1280,
-        height: 720,
+        width: 1920,
+        height: 1080,
     }
 
     constructor() {
         const { width, height } = this.viewPort;
+
+        // make sure we maintain the aspect ratio.
+        window.addEventListener('resize', () => {
+            this.resize();
+        }, false);
 
         // setup the background canvas.
         this.backgroundRender = new CanvasRenderer({
@@ -300,6 +305,25 @@ export default class Game {
         this.removeObjects.length = 0;
     }
 
+    resize = () => {
+        const desiredRatio = 1080 / 1920;
+        const clientWidth = document.body.clientWidth;
+        const clientHeight = document.body.clientHeight;
+        const currentRation = clientHeight / clientWidth;
+
+        if (currentRation < desiredRatio) {
+            this.backgroundRender.view.style.height = '100%';
+            this.renderer.view.style.height = '100%';
+            this.backgroundRender.view.style.width = 'auto';
+            this.renderer.view.style.width = 'auto';
+        } else {
+            this.backgroundRender.view.style.width = '100%';
+            this.renderer.view.style.width = '100%';
+            this.backgroundRender.view.style.height = 'auto';
+            this.renderer.view.style.height = 'auto';
+        }
+    }
+
     tick = () => {
         this.updatePhysics();
         this.renderer.render(this.stage);
@@ -307,6 +331,7 @@ export default class Game {
     }
 
     start = () => {
+        this.resize();
         this.drawStars();
         this.setupBoundaries();
         this.backgroundRender.render(this.backgroundStage);
