@@ -95,6 +95,8 @@ export default class Game {
         score[1].x = 1880;
         score[1].y = 1025;
 
+        this.scoreGraphics = score;
+
         // Add the text to the stage.
         this.stage.addChild(score[0]);
         this.stage.addChild(score[1]);
@@ -261,6 +263,10 @@ export default class Game {
         this.world.on('beginContact', (event) => {
             if (event.bodyB.id === this.ship.id) {
                 this.removeObjects.push(event.bodyA);
+
+                this.score[this.player] += 1;
+                this.scoreGraphics[this.player].setText(this.score[this.player]);
+
                 // play random boom sound.
                 this.sounds.play(`boom${Math.ceil(Math.random() * 3)}`);
             }
