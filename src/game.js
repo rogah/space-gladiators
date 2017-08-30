@@ -4,6 +4,7 @@ import {
     Graphics,
     Texture,
     Sprite,
+    Text,
 } from 'pixi.js';
 import { World, Body, Box, Circle } from 'p2';
 import { Howl } from 'howler';
@@ -15,8 +16,13 @@ export default class Game {
         height: 1080,
     }
 
+    score = [0, 0]
+
     constructor() {
         const { width, height } = this.viewPort;
+
+        // Determine what player we are.
+        this.player = parseInt(window.location.hash.replace('#', ''), 10);
 
         // make sure we maintain the aspect ratio.
         window.addEventListener('resize', () => {
@@ -60,6 +66,38 @@ export default class Game {
         this.enemyBodies = [];
         this.enemyGraphics = [];
         this.removeObjects = [];
+    }
+
+    setupScores = () => {
+        this.score = [0, 0];
+
+        const score = [];
+
+        // setup the score text for player 1.
+        score[0] = new Text(this.score[0], {
+            fontFamily: 'Arial',
+            fontSize: '40px',
+            fontStyle: 'bold',
+            fill: 'cyan',
+            alight: 'left',
+        });
+        score[0].x = 20;
+        score[0].y = 1025;
+
+        // setup the score text for player 1.
+        score[1] = new Text(this.score[1], {
+            fontFamily: 'Arial',
+            fontSize: '40px',
+            fontStyle: 'bold',
+            fill: 'yellow',
+            alight: 'right',
+        });
+        score[1].x = 1880;
+        score[1].y = 1025;
+
+        // Add the text to the stage.
+        this.stage.addChild(score[0]);
+        this.stage.addChild(score[1]);
     }
 
     setupAudio = () => {
@@ -333,12 +371,14 @@ export default class Game {
     start = () => {
         this.resize();
         this.drawStars();
+
         this.setupBoundaries();
         this.backgroundRender.render(this.backgroundStage);
 
         this.createShip();
         this.createEnemies();
         this.setupAudio();
+        this.setupScores();
         requestAnimationFrame(() => this.tick());
     }
 }
